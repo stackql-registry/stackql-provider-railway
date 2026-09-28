@@ -1,0 +1,704 @@
+{
+  "_comment": "Operation mapping rules for the railway provider. The walk in provider-dev/scripts/lib/schema_walk.mjs names resources and methods mechanically (Railway's <noun><Verb> convention); this file holds the decisions the mechanics cannot make. Keys are GraphQL field names on Query / Mutation. Every change here is a mapping change: run `make generate` and review the all_services.csv diff.",
+  "verbs": [
+    "Create",
+    "Update",
+    "Delete",
+    "Remove",
+    "Add",
+    "Upsert",
+    "Set",
+    "Unset",
+    "Rename",
+    "Use",
+    "Accept",
+    "Resend",
+    "Approve",
+    "Cancel",
+    "Redeploy",
+    "Restart",
+    "Rollback",
+    "Stop",
+    "Deploy",
+    "DeployV2",
+    "Connect",
+    "Disconnect",
+    "Attach",
+    "Detach",
+    "Reset",
+    "Configure",
+    "Clone",
+    "Generate",
+    "Publish",
+    "Unpublish",
+    "Revert",
+    "Claim",
+    "Leave",
+    "Transfer",
+    "Schedule",
+    "Commit",
+    "Restage",
+    "Lock",
+    "Restore",
+    "Dispatch",
+    "Recover",
+    "Wake",
+    "Sleep",
+    "Fork",
+    "Exec",
+    "Heartbeat",
+    "Destroy",
+    "Test",
+    "Replace",
+    "Snooze",
+    "Invite",
+    "Issue",
+    "Unskip"
+  ],
+  "uncountable": [
+    "status",
+    "stats",
+    "info",
+    "compliance",
+    "usage",
+    "health",
+    "progress",
+    "access",
+    "preferences",
+    "egress",
+    "metrics",
+    "history",
+    "work"
+  ],
+  "skip": {
+    "_comment": "kind.fieldName -> reason code. Reason codes are documented in NOTES.md.",
+    "query.adminVolumeInstancesForVolume": "platform_admin_only",
+    "query.changelogBlockImage": "website_content",
+    "query.devNewLandingTarget": "internal_development_surface",
+    "query.sshSignupInfo": "interactive_auth_flow",
+    "mutation.devNewLandingTargetClear": "internal_development_surface",
+    "mutation.devNewLandingTargetSet": "internal_development_surface",
+    "mutation.fairUseAgree": "legal_consent_flow",
+    "mutation.userTermsUpdate": "legal_consent_flow",
+    "mutation.sshSignupApprove": "interactive_auth_flow",
+    "query.projectToken": "project_token_auth_only"
+  },
+  "skipPatterns": [
+    [
+      "^loginSession",
+      "interactive_auth_flow",
+      "mutation"
+    ],
+    [
+      "^emailChange",
+      "interactive_auth_flow",
+      "mutation"
+    ],
+    [
+      "^twoFactorInfo(Create|Delete|Secret|Validate)$",
+      "interactive_auth_flow",
+      "mutation"
+    ],
+    [
+      "^recoveryCode",
+      "interactive_auth_flow",
+      "mutation"
+    ],
+    [
+      "EventTrack$",
+      "client_telemetry",
+      "mutation"
+    ],
+    [
+      "^cloudAgent(StateReport|FeedbackCreate)$",
+      "client_telemetry",
+      "mutation"
+    ]
+  ],
+  "unwrap": {
+    "_comment": "Root queries that return a wrapper object around the rows. items is the field holding the rows; cursor describes non-Relay pagination where the wrapper carries it.",
+    "apiToken": {
+      "items": "workspaces"
+    },
+    "cloudAgentTasks": {
+      "items": "tasks",
+      "cursor": {
+        "arg": "cursor",
+        "path": "nextCursor",
+        "limitArg": "limit"
+      }
+    },
+    "httpDurationMetrics": {
+      "items": "samples"
+    },
+    "httpMetrics": {
+      "items": "samples"
+    },
+    "projectServiceUsage": {
+      "items": "usage",
+      "cursor": {
+        "arg": "after",
+        "path": "pageInfo.endCursor",
+        "hasNext": "pageInfo.hasNextPage",
+        "pageSizeArg": "first",
+        "pageSize": 50
+      }
+    },
+    "projectWorkspaceMembers": {
+      "items": "members"
+    }
+  },
+  "queries": {
+    "_comment": "Root query naming overrides. noun registers the singular noun mutations are matched against. require makes an optional argument a required parameter where the API needs one of several optional identifiers and SQL needs a signature (template: code).",
+    "agentUsage": {
+      "resource": "agent_usage"
+    },
+    "apiToken": {
+      "resource": "api_token_workspaces",
+      "noun": "apiTokenWorkspace"
+    },
+    "auditLogEventTypeInfo": {
+      "resource": "audit_log_event_types"
+    },
+    "bucketInstanceDetails": {
+      "resource": "bucket_instances",
+      "noun": "bucketInstance"
+    },
+    "bucketS3Credentials": {
+      "resource": "bucket_s3_credentials",
+      "noun": "bucketCredentials"
+    },
+    "canvasViewMergePreview": {
+      "resource": "canvas_view_merges",
+      "method": "get_preview",
+      "noun": "canvasView"
+    },
+    "cloudAgentTask": {
+      "resource": "cloud_agent_task_results",
+      "noun": "cloudAgentTaskResult"
+    },
+    "customDomainAvailable": {
+      "resource": "custom_domain_availability"
+    },
+    "egressGatewayHAPreview": {
+      "resource": "egress_gateway_ha_previews"
+    },
+    "egressGatewayLegacyPreview": {
+      "resource": "egress_gateway_legacy_previews"
+    },
+    "environmentChangeSetApply": {
+      "resource": "environment_change_sets",
+      "noun": "environmentChangeSet"
+    },
+    "environmentHasLegacyStaticEgress": {
+      "resource": "environment_legacy_static_egress"
+    },
+    "environmentStagedChanges": {
+      "resource": "environment_staged_changes",
+      "noun": "environmentStagedChange"
+    },
+    "githubIsRepoNameAvailable": {
+      "resource": "github_repo_name_availability"
+    },
+    "githubPRInfo": {
+      "resource": "github_pr_info"
+    },
+    "githubPRInfoResult": {
+      "resource": "github_pr_info_results"
+    },
+    "gitHubRepoAccessAvailable": {
+      "resource": "github_repo_access"
+    },
+    "gitHubSshKeys": {
+      "resource": "github_ssh_keys"
+    },
+    "herokuApps": {
+      "resource": "heroku_apps",
+      "noun": "heroku"
+    },
+    "me": {
+      "resource": "current_user",
+      "noun": "user"
+    },
+    "myCloudAgents": {
+      "resource": "cloud_agents",
+      "method": "list_mine"
+    },
+    "pitrHaClusterReplicationHealth": {
+      "resource": "pitr_ha_clusters",
+      "method": "get_replication_health",
+      "noun": "pitrHaCluster"
+    },
+    "pitrHaWorkflowProgress": {
+      "resource": "pitr_ha_workflows",
+      "method": "get_progress",
+      "noun": "pitrHaWorkflow"
+    },
+    "privateNetworkEndpointNameAvailable": {
+      "resource": "private_network_endpoint_name_availability"
+    },
+    "projectsByIds": {
+      "resource": "projects",
+      "method": "list_by_ids"
+    },
+    "railwayDomainByName": {
+      "resource": "railway_domains",
+      "method": "get_by_name"
+    },
+    "railwayDomainEmailForwardingEligibility": {
+      "resource": "railway_domain_email_forwarding_eligibility"
+    },
+    "serviceDomainAvailable": {
+      "resource": "service_domain_availability"
+    },
+    "serviceInstanceAutoDeployStatus": {
+      "resource": "service_instance_auto_deploy",
+      "noun": "serviceInstanceAutoDeploy"
+    },
+    "serviceInstanceIsUpdatable": {
+      "resource": "service_instance_updatability"
+    },
+    "serviceInstanceLimitOverride": {
+      "resource": "service_instance_limit_overrides"
+    },
+    "serviceInstanceLimits": {
+      "resource": "service_instance_limits",
+      "noun": "serviceInstanceLimits"
+    },
+    "signalEvaluate": {
+      "resource": "signal_evaluations"
+    },
+    "template": {
+      "require": [
+        "code"
+      ]
+    },
+    "templatesCount": {
+      "resource": "template_counts"
+    },
+    "templateSourceForProject": {
+      "resource": "templates",
+      "method": "get_source_for_project"
+    },
+    "trace": {
+      "resource": "trace_spans"
+    },
+    "validateServiceEdgeRules": {
+      "resource": "service_edge_rule_diagnostics"
+    },
+    "workflowStatus": {
+      "resource": "workflow_status"
+    },
+    "workspaceByCode": {
+      "resource": "workspaces",
+      "method": "get_by_code"
+    }
+  },
+  "nested": {
+    "_comment": "Nested fields on objects returned by root gets, mapped as resources of their own: collections as list methods, single objects (kind: object) as get methods. Nested collections not named here stay available as JSON columns on the host row and are reason coded inline_json_column.",
+    "deployment.instances": {
+      "resource": "deployment_instances",
+      "noun": "deploymentInstance"
+    },
+    "domains.customDomains": {
+      "resource": "custom_domains",
+      "noun": "customDomain"
+    },
+    "domains.serviceDomains": {
+      "resource": "service_domains",
+      "noun": "serviceDomain"
+    },
+    "environment.serviceInstances": {
+      "resource": "service_instances",
+      "noun": "serviceInstance"
+    },
+    "environment.variables": {
+      "resource": "environment_variables",
+      "noun": "environmentVariable"
+    },
+    "environment.volumeInstances": {
+      "resource": "volume_instances",
+      "noun": "volumeInstance"
+    },
+    "me.providerAuths": {
+      "resource": "provider_auths",
+      "noun": "providerAuth"
+    },
+    "me.workspaces": {
+      "resource": "workspaces",
+      "noun": "workspace"
+    },
+    "project.buckets": {
+      "resource": "buckets",
+      "noun": "bucket"
+    },
+    "project.groups": {
+      "resource": "project_groups",
+      "noun": "projectGroup"
+    },
+    "project.projectPermissions": {
+      "resource": "project_permissions",
+      "noun": "projectPermission"
+    },
+    "project.services": {
+      "resource": "services",
+      "noun": "service"
+    },
+    "project.volumes": {
+      "resource": "volumes",
+      "noun": "volume"
+    },
+    "serviceInstance.edgeConfig": {
+      "resource": "service_edge_configs",
+      "method": "get",
+      "kind": "object",
+      "noun": "serviceEdgeConfig"
+    },
+    "template.services": {
+      "resource": "template_services",
+      "noun": "templateService"
+    },
+    "workspace.accessGroups": {
+      "resource": "access_groups",
+      "noun": "accessGroup"
+    },
+    "workspace.customer": {
+      "resource": "customers",
+      "method": "get",
+      "kind": "object",
+      "noun": "customer"
+    },
+    "workspace.members": {
+      "resource": "workspace_members",
+      "noun": "workspaceMember"
+    },
+    "workspacePolicy.deploySourceAllowlist": {
+      "resource": "workspace_policy_deploy_sources",
+      "noun": "workspacePolicyDeploySourceAllowlist"
+    }
+  },
+  "mutations": {
+    "_comment": "Mutation naming overrides: lifecycle operations are attached to the selectable resource they act on. verb defaults from the method name (create/add/upsert/attach -> insert, update/rename -> update, delete/remove/destroy/detach -> delete, anything else -> exec).",
+    "agentUsageLimitSet": {
+      "resource": "agent_usage",
+      "method": "set_limit"
+    },
+    "baseEnvironmentOverride": {
+      "resource": "projects",
+      "method": "override_base_environment"
+    },
+    "bucketCredentialsReset": {
+      "resource": "bucket_s3_credentials",
+      "method": "reset"
+    },
+    "cancelPitrHaWorkflow": {
+      "resource": "pitr_ha_workflows",
+      "method": "cancel"
+    },
+    "canvasViewMerge": {
+      "resource": "canvas_view_merges",
+      "method": "merge"
+    },
+    "clearPitrHaWorkflowProgress": {
+      "resource": "pitr_ha_workflows",
+      "method": "clear_progress"
+    },
+    "cloudAgentTaskDispatch": {
+      "resource": "cloud_agent_tasks",
+      "method": "dispatch"
+    },
+    "cloudAgentTaskRecover": {
+      "resource": "cloud_agent_task_results",
+      "method": "recover"
+    },
+    "customerCreateFreePlanSubscription": {
+      "resource": "customers",
+      "method": "create_free_plan_subscription",
+      "verb": "exec"
+    },
+    "customerTogglePayoutsToCredits": {
+      "resource": "customers",
+      "method": "toggle_payouts_to_credits"
+    },
+    "disablePitrForHaCluster": {
+      "resource": "pitr_ha_clusters",
+      "method": "disable_pitr"
+    },
+    "disableServiceCdn": {
+      "resource": "service_edge_configs",
+      "method": "disable_cdn"
+    },
+    "dockerComposeImport": {
+      "resource": "environments",
+      "method": "import_docker_compose"
+    },
+    "egressGatewayAssociationCreate": {
+      "resource": "egress_gateways",
+      "method": "create"
+    },
+    "egressGatewayAssociationsClear": {
+      "resource": "egress_gateways",
+      "method": "clear",
+      "verb": "delete"
+    },
+    "egressGatewayHAMigrationPreview": {
+      "resource": "egress_gateways",
+      "method": "preview_ha_migration"
+    },
+    "enablePitrForHaCluster": {
+      "resource": "pitr_ha_clusters",
+      "method": "enable_pitr"
+    },
+    "enableServiceCdn": {
+      "resource": "service_edge_configs",
+      "method": "enable_cdn"
+    },
+    "environmentApplyChangeSet": {
+      "resource": "environment_change_sets",
+      "method": "apply"
+    },
+    "environmentConfigPlanCommentUpsert": {
+      "resource": "environments",
+      "method": "upsert_config_plan_comment",
+      "verb": "exec"
+    },
+    "environmentIacPartialRelease": {
+      "resource": "environments",
+      "method": "release_iac_partial"
+    },
+    "environmentIacPartialTransfer": {
+      "resource": "environments",
+      "method": "transfer_iac_partial"
+    },
+    "environmentPatchCommitStaged": {
+      "resource": "environment_staged_changes",
+      "method": "commit"
+    },
+    "environmentPreviewChangeSet": {
+      "resource": "environment_change_sets",
+      "method": "preview"
+    },
+    "environmentStageChanges": {
+      "resource": "environment_staged_changes",
+      "method": "stage"
+    },
+    "environmentTriggersDeploy": {
+      "resource": "deployment_triggers",
+      "method": "deploy"
+    },
+    "featureFlagAdd": {
+      "resource": "current_user",
+      "method": "add_feature_flag",
+      "verb": "exec"
+    },
+    "featureFlagRemove": {
+      "resource": "current_user",
+      "method": "remove_feature_flag",
+      "verb": "exec"
+    },
+    "generateShellToken": {
+      "resource": "service_instances",
+      "method": "generate_shell_token"
+    },
+    "herokuImportVariables": {
+      "resource": "heroku_apps",
+      "method": "import_variables"
+    },
+    "notificationDeliveriesMarkAsRead": {
+      "resource": "notification_deliveries",
+      "method": "mark_as_read"
+    },
+    "projectFeatureFlagAdd": {
+      "resource": "projects",
+      "method": "add_feature_flag",
+      "verb": "exec"
+    },
+    "projectFeatureFlagRemove": {
+      "resource": "projects",
+      "method": "remove_feature_flag",
+      "verb": "exec"
+    },
+    "purgeServiceCache": {
+      "resource": "service_edge_configs",
+      "method": "purge_cache"
+    },
+    "railwayDomainEmailForwardingRemoveAll": {
+      "resource": "railway_domain_email_forwarding_rules",
+      "method": "remove_all",
+      "verb": "exec"
+    },
+    "railwayDomainEmailForwardingRuleSendTest": {
+      "resource": "railway_domain_email_forwarding_rules",
+      "method": "send_test"
+    },
+    "railwayDomainNameserversSet": {
+      "resource": "railway_domains",
+      "method": "set_nameservers"
+    },
+    "sandboxTemplateBuild": {
+      "resource": "sandbox_template_builds",
+      "method": "create"
+    },
+    "serviceFeatureFlagAdd": {
+      "resource": "services",
+      "method": "add_feature_flag",
+      "verb": "exec"
+    },
+    "serviceFeatureFlagRemove": {
+      "resource": "services",
+      "method": "remove_feature_flag",
+      "verb": "exec"
+    },
+    "serviceInstanceAutoUpdateScheduleUpdate": {
+      "resource": "service_instances",
+      "method": "update_auto_update_schedule",
+      "verb": "exec"
+    },
+    "serviceInstanceAutoUpdateSnooze": {
+      "resource": "service_instances",
+      "method": "snooze_auto_update"
+    },
+    "serviceInstanceAutoUpdateSnoozeClear": {
+      "resource": "service_instances",
+      "method": "clear_auto_update_snooze"
+    },
+    "serviceInstanceVulnRemediationDismiss": {
+      "resource": "service_instances",
+      "method": "dismiss_vuln_remediation"
+    },
+    "serviceInstanceVulnRemediationPatchNow": {
+      "resource": "service_instances",
+      "method": "patch_vuln_now"
+    },
+    "setServiceUnderAttackMode": {
+      "resource": "service_edge_configs",
+      "method": "set_under_attack_mode"
+    },
+    "sharedVariableConfigure": {
+      "resource": "variables",
+      "method": "configure_shared"
+    },
+    "signalDefaultSet": {
+      "resource": "signals",
+      "method": "set_default"
+    },
+    "signalRuleSet": {
+      "resource": "signals",
+      "method": "set_rule"
+    },
+    "signalRuleUnset": {
+      "resource": "signals",
+      "method": "unset_rule"
+    },
+    "templateServiceSourceEject": {
+      "resource": "templates",
+      "method": "eject_service_source"
+    },
+    "templateVolumeUpdate": {
+      "resource": "templates",
+      "method": "update_volume",
+      "verb": "exec"
+    },
+    "updateServiceEdgeConfig": {
+      "resource": "service_edge_configs",
+      "method": "update"
+    },
+    "updateServiceEdgeRules": {
+      "resource": "service_edge_configs",
+      "method": "update_rules",
+      "verb": "exec"
+    },
+    "upsertSlackChannel": {
+      "resource": "workspaces",
+      "method": "upsert_slack_channel_for_workspace",
+      "verb": "exec"
+    },
+    "usageLimitRemove": {
+      "resource": "customers",
+      "method": "remove_usage_limit",
+      "verb": "exec"
+    },
+    "usageLimitSet": {
+      "resource": "customers",
+      "method": "set_usage_limit"
+    },
+    "userBetaLeave": {
+      "resource": "current_user",
+      "method": "leave_beta"
+    },
+    "userDiscordDisconnect": {
+      "resource": "current_user",
+      "method": "disconnect_discord"
+    },
+    "userFlagsRemove": {
+      "resource": "current_user",
+      "method": "remove_flags",
+      "verb": "exec"
+    },
+    "userFlagsSet": {
+      "resource": "current_user",
+      "method": "set_flags"
+    },
+    "variableCollectionUpsert": {
+      "resource": "variables",
+      "method": "upsert_collection",
+      "verb": "insert"
+    },
+    "volumeInstancePITRRestore": {
+      "resource": "volume_instances",
+      "method": "pitr_restore"
+    },
+    "webhookTest": {
+      "resource": "notification_rules",
+      "method": "test_webhook"
+    },
+    "workspaceInviteCodeCreate": {
+      "resource": "workspaces",
+      "method": "create_invite_code",
+      "verb": "exec"
+    },
+    "workspaceInviteCodeUse": {
+      "resource": "workspaces",
+      "method": "use_invite_code"
+    },
+    "workspacePermissionChange": {
+      "resource": "workspace_members",
+      "method": "update"
+    },
+    "workspacePolicyDeploySourceAllowlistAdd": {
+      "resource": "workspace_policy_deploy_sources",
+      "method": "add"
+    },
+    "workspacePolicyDeploySourceAllowlistRemove": {
+      "resource": "workspace_policy_deploy_sources",
+      "method": "remove"
+    },
+    "workspacePolicyItemUpdate": {
+      "resource": "workspace_policies",
+      "method": "update"
+    },
+    "workspaceSetRestrictProjectVisibilityToGroups": {
+      "resource": "workspaces",
+      "method": "set_restrict_project_visibility_to_groups"
+    },
+    "workspaceTwoFactorEnforcementUpdate": {
+      "resource": "workspaces",
+      "method": "update_two_factor_enforcement",
+      "verb": "exec"
+    },
+    "workspaceUpsertSlackChannel": {
+      "resource": "workspaces",
+      "method": "upsert_slack_channel",
+      "verb": "exec"
+    },
+    "workspaceUserInvite": {
+      "resource": "workspace_members",
+      "method": "invite",
+      "verb": "insert"
+    },
+    "workspaceUserRemove": {
+      "resource": "workspace_members",
+      "method": "remove"
+    }
+  }
+}

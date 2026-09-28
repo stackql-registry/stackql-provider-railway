@@ -1,0 +1,134 @@
+{
+  "_comment": "Selection policy for the railway provider build. Every generated query, response schema and request body derives from the pinned schema through these settings; change the policy, never the generated artifacts.",
+  "pageSize": 100,
+  "nestedDepth": 1,
+  "expandNested": {
+    "_comment": "Type.field entries whose nested object is selected one level deeper than nestedDepth, because the value objects beneath it carry the data the resource exists for.",
+    "CustomDomain.status": true,
+    "ServiceInstance.domains": true
+  },
+  "excludeFieldNamePatterns": [],
+  "nodeTypeFieldExclusions": {},
+  "nestedScalarExclusions": [
+    "CanvasConfig",
+    "DeploymentMeta",
+    "DisplayConfig",
+    "EnvironmentConfig",
+    "JSON",
+    "NotificationPayload",
+    "SerializedTemplateConfig",
+    "TemplateConfig"
+  ],
+  "skipNonNullReferencesWithNullableIds": true,
+  "unstableFields": {
+    "_comment": "Fields observed to fail for an ordinary account token. The engine fails the whole statement on any GraphQL error, so these are not selected. Type -> field -> observation (make validate-live is the evidence).",
+    "User": {
+      "platformFeatureFlags": "2026-09-28: me.platformFeatureFlags answers Not Authorized for an account token on the Hobby plan"
+    },
+    "Variable": {
+      "plugin": "2026-09-28: Environment.variables { plugin { ... } } answers \"Problem processing request\" (plugins are a retired concept; the non-null resolver fails for service variables)",
+      "service": "2026-09-28: Environment.variables { service { ... } } answers \"Problem processing request\" when the environment holds a shared variable (no service; the field is declared non-null); service_id carries the reference"
+    },
+    "EnvironmentPatch": {
+      "environment": "2026-09-28: environmentStagedChanges { environment { ... } } answers \"Problem processing request\" (the staged patch is synthetic, id \"<empty>\"); environment_id carries the reference"
+    },
+    "Project": {
+      "members": "2026-09-28: projects(includeDeleted: true) { members } answers Project not found for every deleted project; the project_members resource serves the list",
+      "workspace": "2026-09-28: projects(includeDeleted: true) { workspace } answers Project not found for every deleted project; workspace_id carries the reference"
+    }
+  },
+  "sqlReservedColumnNames": [
+    "all",
+    "default",
+    "exists",
+    "from",
+    "group",
+    "limit",
+    "primary",
+    "references",
+    "release",
+    "replace",
+    "to",
+    "values"
+  ],
+  "reservedColumnSuffix": "_",
+  "scalarTypes": {
+    "Int": {
+      "type": "integer"
+    },
+    "Float": {
+      "type": "number"
+    },
+    "Boolean": {
+      "type": "boolean"
+    },
+    "DateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "JSON": {
+      "type": "object"
+    },
+    "CanvasConfig": {
+      "type": "object"
+    },
+    "DeploymentDiagnosis": {
+      "type": "object"
+    },
+    "DeploymentMeta": {
+      "type": "object"
+    },
+    "DisplayConfig": {
+      "type": "object"
+    },
+    "EnvironmentConfig": {
+      "type": "object"
+    },
+    "EnvironmentVariables": {
+      "type": "object"
+    },
+    "NotificationChannelConfig": {
+      "type": "object"
+    },
+    "NotificationPayload": {
+      "type": "object"
+    },
+    "RailpackInfo": {
+      "type": "object"
+    },
+    "SerializedTemplateConfig": {
+      "type": "object"
+    },
+    "ServiceInstanceLimit": {
+      "type": "object"
+    },
+    "SkippedResourceIds": {
+      "type": "object"
+    },
+    "SubscriptionPlanLimit": {
+      "type": "object"
+    },
+    "SupportHealthMetrics": {
+      "type": "object"
+    },
+    "TemplateConfig": {
+      "type": "object"
+    },
+    "TemplateMetadata": {
+      "type": "object"
+    },
+    "TemplateServiceConfig": {
+      "type": "object"
+    },
+    "TemplateVolume": {
+      "type": "object"
+    }
+  },
+  "keyValueScalars": {
+    "EnvironmentVariables": {
+      "keyColumn": "name",
+      "valueColumn": "value"
+    }
+  },
+  "scalarResultColumn": "result"
+}

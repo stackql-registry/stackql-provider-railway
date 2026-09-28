@@ -1,0 +1,37 @@
+{
+  "name": "stackql-provider-railway",
+  "version": "0.1.0",
+  "description": "StackQL provider for Railway - SQL query and provisioning operations over the Railway public GraphQL API",
+  "type": "module",
+  "scripts": {
+    "fetch-schema": "bash ./bin/fetch-schema.sh",
+    "build-inventory": "node ./provider-dev/scripts/build_inventory.mjs",
+    "generate-provider": "node ./provider-dev/scripts/generate_provider.mjs",
+    "check-mappings": "node ./provider-dev/scripts/check_mapping_stability.mjs",
+    "generate-docs": "node ./node_modules/@stackql/provider-utils/bin/docgen-utils.mjs generate-docs",
+    "sanitize-docs": "node ./website/scripts/sanitize-docs.mjs",
+    "start-server": "bash ./bin/start-server.sh",
+    "stop-server": "bash ./bin/stop-server.sh",
+    "server-status": "bash ./bin/server-status.sh",
+    "test-meta-routes": "node ./bin/test-meta-routes.cjs",
+    "test-offline": "node ./tests/offline_validation.mjs && node ./tests/mapping_stability_test.mjs",
+    "test-integration": "node ./tests/integration/run_integration_tests.mjs"
+  },
+  "dependencies": {
+    "@stackql/pgwire-lite": "^1.0.2",
+    "@stackql/provider-utils": "^0.7.10",
+    "graphql": "^17.0.2",
+    "js-yaml": "^5.2.1",
+    "pluralize": "^8.0.0"
+  },
+  "keywords": [
+    "stackql",
+    "railway",
+    "provider",
+    "graphql"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
