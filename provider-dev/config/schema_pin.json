@@ -1,0 +1,8 @@
+{
+  "url": "https://backboard.railway.com/graphql/v2",
+  "method": "POST introspection query (provider-dev/config/introspection_query.graphql), unauthenticated",
+  "file": "provider-dev/downloaded/introspection_result.json",
+  "fetchedAt": "2026-09-28T05:11:18Z",
+  "sha256": "65c68407ceb4f5a9809412e7165a7e7ed053549461f1fdaedce49b434fd1480c",
+  "bytes": 1581482
+}

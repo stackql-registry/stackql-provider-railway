@@ -1,0 +1,19 @@
+---
+title: railway
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - railway
+  - stackql
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, provision and manage Railway projects, environments, services, deployments, variables, domains and volumes using SQL
+custom_edit_url: null
+image: /img/stackql-railway-provider-featured-image.png
+id: 'provider-intro'
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+
+Query, provision and manage Railway resources using SQL: projects, environments, services and service instances, deployments and their lifecycle, variables, domains, volumes, usage and logs. The provider is generated from the Railway public GraphQL API schema.

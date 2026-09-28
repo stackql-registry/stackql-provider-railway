@@ -1,0 +1,6 @@
+# Scripts and generated artifacts are LF everywhere: the pipeline runs under
+# Linux / WSL, and CI compares regenerated output with the committed files.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.svg text eol=lf

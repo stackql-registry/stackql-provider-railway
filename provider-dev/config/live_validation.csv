@@ -1,0 +1,175 @@
+method,status,detail
+account.api_token_workspaces.list,PASS,
+account.api_tokens.list,PASS,
+account.bot_scope_bindings.list,PASS,
+account.current_user.get,PASS,
+account.passkeys.list,PASS,
+account.preferences.get,PASS,
+account.provider_auths.list,PASS,
+account.sessions.list,PASS,
+account.ssh_public_keys.list,PASS,
+account.two_factor_info.get,PASS,
+account.user_profiles.get,FAIL,userProfile: User not found
+agents.cloud_agent_checkpoints.get,SKIPPED,no value for id
+agents.cloud_agent_checkpoints.list,PASS,
+agents.cloud_agent_console_sessions.list,SKIPPED,no value for cloud_agent_id
+agents.cloud_agent_task_results.get,SKIPPED,"no value for cloud_agent_id, session_id"
+agents.cloud_agent_tasks.list,FAIL,cloudAgentTasks: Not Authorized
+agents.cloud_agents.get,SKIPPED,no value for id
+agents.cloud_agents.list,PASS,
+agents.cloud_agents.list_mine,PASS,
+agents.sandbox_checkpoints.list,PASS,
+agents.sandbox_sessions.list,SKIPPED,no value for id
+agents.sandbox_template_builds.get,SKIPPED,no value for id
+agents.sandboxes.get,SKIPPED,no value for id
+agents.sandboxes.list,PASS,
+billing.agent_usage.get,PASS,
+billing.customers.get,PASS,
+billing.estimated_usage.list,PASS,
+billing.project_service_usage.list,PASS,
+billing.usage.list,PASS,
+billing.workspace_usage_totals.list,PASS,
+deployments.deployment_events.list,SKIPPED,no value for id
+deployments.deployment_instance_executions.list,PASS,
+deployments.deployment_instances.list,SKIPPED,no value for deployment_id
+deployments.deployment_snapshots.get,SKIPPED,no value for deployment_id
+deployments.deployment_triggers.list,PASS,
+deployments.deployments.get,SKIPPED,no value for id
+deployments.deployments.list,PASS,
+environments.canvas_view_merges.get_preview,FAIL,canvasViewMergePreview: Source canvas view not found
+environments.environment_change_sets.get,FAIL,environmentChangeSetApply: ChangeSet apply not found
+environments.environment_history.list,PASS,
+environments.environment_legacy_static_egress.get,PASS,
+environments.environment_patches.get,FAIL,environmentPatch: Environment patch not found not found
+environments.environment_patches.list,PASS,
+environments.environment_pending_work.list,PASS,
+environments.environment_staged_changes.get,PASS,
+environments.environments.get,PASS,
+environments.environments.list,PASS,
+integrations.github_pr_info_results.get,SKIPPED,no value for pr_number
+integrations.github_pr_info.get,SKIPPED,no value for pr_number
+integrations.github_repo_access.get,PASS,
+integrations.github_repo_branches.list,FAIL,githubRepoBranches: GitHub Repo not found
+integrations.github_repo_name_availability.get,PASS,
+integrations.github_repos.get,PASS,
+integrations.github_repos.list,PASS,
+integrations.github_ssh_keys.list,PASS,
+integrations.github_writable_scopes.list,PASS,
+integrations.heroku_apps.list,FAIL,herokuApps: No Heroku provider found for user
+integrations.integration_auths.get,SKIPPED,"no value for provider, provider_id"
+integrations.integration_auths.list,PASS,
+integrations.integrations.list,PASS,
+integrations.vercel_info.get,PASS,
+networking.custom_domain_availability.get,PASS,
+networking.custom_domains.get,SKIPPED,no value for id
+networking.custom_domains.list,PASS,
+networking.domains.get,PASS,
+networking.egress_gateway_ha_previews.list,PASS,
+networking.egress_gateway_legacy_previews.list,PASS,
+networking.egress_gateways.list,PASS,
+networking.private_network_endpoint_name_availability.get,SKIPPED,"no value for prefix, private_network_id"
+networking.private_network_endpoints.get,SKIPPED,no value for private_network_id
+networking.private_networks.list,PASS,
+networking.railway_domain_dns_records.list,FAIL,railwayDomainDnsRecords: Domain not found or not active
+networking.railway_domain_email_forwarding_eligibility.get,FAIL,railwayDomainEmailForwardingEligibility: Domain not found or not active
+networking.railway_domain_email_forwarding_limits.get,PASS,
+networking.railway_domain_email_forwarding_rules.list,FAIL,railwayDomainEmailForwardingRules: Domain not found or not active
+networking.railway_domains.get,SKIPPED,no value for id
+networking.railway_domains.get_by_name,FAIL,railwayDomainByName: RailwayDomain not found
+networking.railway_domains.list,PASS,
+networking.service_domain_availability.get,FAIL,serviceDomainAvailable: Invalid domain
+networking.service_domains.list,PASS,
+networking.tcp_proxies.list,PASS,
+observability.build_logs.list,SKIPPED,no value for deployment_id
+observability.deployment_logs.list,SKIPPED,no value for deployment_id
+observability.dns_query_logs.list,PASS,
+observability.environment_logs.list,PASS,
+observability.events.list,PASS,
+observability.http_duration_metrics.list,PASS,
+observability.http_logs.list,SKIPPED,no value for deployment_id
+observability.http_metrics_grouped_by_status.list,PASS,
+observability.http_metrics.list,PASS,
+observability.metrics.list,PASS,
+observability.network_flow_logs.list,PASS,
+observability.notification_deliveries.get,SKIPPED,no value for id
+observability.notification_deliveries.list,PASS,
+observability.notification_rules.list,PASS,
+observability.observability_dashboards.list,PASS,
+observability.trace_spans.list,SKIPPED,no value for trace_id
+observability.traces.list,PASS,
+observability.tracing_status.list,PASS,
+platform.all_platform_feature_flags.list,PASS,
+platform.platform_status.get,PASS,
+platform.public_stats.get,PASS,
+platform.regions.list,PASS,
+platform.signal_changes.list,SKIPPED,no value for name
+platform.signal_evaluations.get,SKIPPED,"no value for context, name"
+platform.signals.get,SKIPPED,no value for name
+platform.signals.list,PASS,
+projects.invite_codes.get,FAIL,inviteCode: Invite code does not exist
+projects.project_compliance.get,PASS,
+projects.project_favorites.list,PASS,
+projects.project_groups.list,PASS,
+projects.project_invitations.list,PASS,
+projects.project_invite_codes.get,SKIPPED,no value for role
+projects.project_members.list,PASS,
+projects.project_permissions.list,PASS,
+projects.project_resource_access.get,PASS,
+projects.project_tokens.list,PASS,
+projects.project_workspace_members.list,PASS,
+projects.projects.get,PASS,
+projects.projects.list,PASS,
+projects.projects.list_by_ids,SKIPPED,no value for ids
+projects.resource_access.get,SKIPPED,no value for id
+services.function_runtimes.get,SKIPPED,no value for name
+services.function_runtimes.list,PASS,
+services.service_edge_configs.get,PASS,
+services.service_edge_rule_diagnostics.list,SKIPPED,no value for edge_rules
+services.service_instance_auto_deploy.get,PASS,
+services.service_instance_limit_overrides.get,PASS,
+services.service_instance_limits.get,PASS,
+services.service_instance_updatability.get,PASS,
+services.service_instances.get,PASS,
+services.service_instances.list,PASS,
+services.services.get,PASS,
+services.services.list,PASS,
+storage.bucket_instances.get,SKIPPED,no value for bucket_id
+storage.bucket_s3_credentials.list,SKIPPED,no value for bucket_id
+storage.buckets.list,PASS,
+storage.mysql_pitr_restorable_windows.get,PASS,
+storage.pitr_ha_clusters.get_replication_health,SKIPPED,no value for root_service_id
+storage.pitr_ha_workflows.get_progress,SKIPPED,no value for root_service_id
+storage.volume_instance_backup_schedules.list,PASS,
+storage.volume_instance_backups.list,PASS,
+storage.volume_instance_pitr_restore_estimates.get,SKIPPED,no value for target_timestamp
+storage.volume_instances.get,PASS,
+storage.volume_instances.list,PASS,
+storage.volumes.list,PASS,
+storage.workflow_status.get,SKIPPED,no value for workflow_id
+templates.template_counts.get,PASS,
+templates.template_metrics.get,SKIPPED,no value for id
+templates.template_search.list,PASS,
+templates.template_services.list,PASS,
+templates.templates.get,PASS,
+templates.templates.get_source_for_project,FAIL,templateSourceForProject: Not Authorized
+templates.templates.list,PASS,
+templates.workspace_templates.list,PASS,
+variables.environment_variables.list,PASS,
+variables.variables_for_service_deployment.list,PASS,
+variables.variables.list,PASS,
+workspaces.access_groups.list,PASS,
+workspaces.audit_log_event_types.list,PASS,
+workspaces.audit_logs.get,SKIPPED,no value for id
+workspaces.audit_logs.list,PASS,
+workspaces.compliance_agreements.get,PASS,
+workspaces.external_workspaces.list,PASS,
+workspaces.referral_info.get,PASS,
+workspaces.trusted_domains.list,PASS,
+workspaces.workspace_identity_providers.list,PASS,
+workspaces.workspace_members.list,PASS,
+workspaces.workspace_policies.get,PASS,
+workspaces.workspace_policy_deploy_sources.list,PASS,
+workspaces.workspace_policy_selectable_deploy_sources.list,SKIPPED,no value for source_type
+workspaces.workspaces.get,PASS,
+workspaces.workspaces.get_by_code,FAIL,workspaceByCode: Invite code not found
+workspaces.workspaces.list,PASS,

@@ -1,1 +1,48 @@
+# stackql binary and server artifacts
+/stackql
+/stackql.exe
+stackql-zip
+stackql-server.log
+nohup.out
+*.log
+.stackql/
+
+# node
+node_modules/
+
+# python venv for the smoke suite
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# env / secrets
 .env
+.env.*
+!.env.example
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# docs site build output
+website/build/
+website/.docusaurus/
+website/.shared-config/
+
+# integration test registry copies (rebuilt every run)
+tests/integration/.registry-tmp/
+tests/integration/.registry-docs-tmp/
+tests/integration/.registry-probe-tmp/
+
+# misc
+.DS_Store
+*.tmp
+*.bak
+.scratch/
+
+# The introspection snapshot in provider-dev/downloaded/ IS committed: the
+# Railway GraphQL schema is served unversioned and the vendor ships
+# continuously, so committing the snapshot makes every refresh a reviewable
+# diff against the hash pin in provider-dev/config/schema_pin.json.
