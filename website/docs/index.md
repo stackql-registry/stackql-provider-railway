@@ -77,7 +77,7 @@ stackql.exe shell --auth=$Auth
 
 ## Rate limits
 
-Railway limits API requests per hour by plan: 100 (Free), 1000 (Hobby), 10000 (Pro). Every statement is at least one request, and a list that spans several pages is one request per 100 rows. A query that joins a parent list to a per-parent read makes one request per parent row, so narrow the parent first.
+Railway limits API requests per hour by plan: 100 (Free), 1000 (Hobby), 10000 (Pro). Every statement is at least one request, and a list that spans several pages is one request per 100 rows. A parameter given as an `IN` list makes one request per value.
 
 ## Working with the provider
 
@@ -86,6 +86,8 @@ The provider is generated from Railway's GraphQL schema. Queries are `SELECT`; m
 - **Identifiers** are parameters: `WHERE id = '...'` reads one project, `WHERE project_id = '...'` lists the services of a project, `WHERE environment_id = '...'` lists the service instances of an environment. `SHOW METHODS IN railway.services.services` lists the methods of a resource and what each requires.
 - **Columns are snake_case** (`created_at`, `is_public`). Nested objects are JSON columns read with `json_extract`. Four names that are SQL reserved words carry a trailing underscore: `default_`, `references_`, `replace_`, `values_`.
 - **Filters are pushed down** into the API request. An argument that takes a list is written as a list literal: `measurements = '[CPU_USAGE, MEMORY_USAGE_GB]'` for enum values, `ids = '["...", "..."]'` for strings.
+- **Several parents in one query** are read with an `IN` list on the parameter: `WHERE project_id IN ('...', '...')` makes one request per value.
+- **Joins** are performed by the SQL engine on the rows each resource returns, so every resource in a join takes its own parameters in `WHERE`. A join does not supply a required parameter from the rows of another resource (`ON e.project_id = p.id` with no `project_id` in `WHERE` returns no rows).
 - **`LIMIT` is pushed down** on the log and trace resources, which take a row limit.
 - **`RETURNING`** returns the created or updated object. A mutation that answers with a single value (a token, a flag) returns it as the `result` column.
 - **JSON valued attributes** (a service `source`, a variable collection) are written as JSON text; their keys keep the API's camelCase names.
@@ -156,6 +158,17 @@ WHERE project_id = '8c2f7a31-4b9d-4e6a-b1c5-0d3e9f7a2b14';
 SELECT id, name, created_at
 FROM railway.services.services
 WHERE project_id = '8c2f7a31-4b9d-4e6a-b1c5-0d3e9f7a2b14';
+```
+
+The services of several projects, with the project names. The `IN` list reads each project, and the join to `projects` takes its own `workspace_id`:
+
+```sql
+SELECT p.name AS project, s.name AS service
+FROM railway.services.services s
+JOIN railway.projects.projects p ON p.id = s.project_id
+WHERE p.workspace_id = '5f6b1c9e-2d4a-4c1e-9a7b-3e8d2f1a6c40'
+AND s.project_id IN ('8c2f7a31-4b9d-4e6a-b1c5-0d3e9f7a2b14', 'f06b8d14-9e2a-4c73-a5b1-2e7d4c8f3a90')
+ORDER BY project, service;
 ```
 
 A service instance is a service as configured in one environment: build and start commands, region, replicas, restart policy, and the latest deployment.

@@ -11,7 +11,9 @@
 // wire is checked as well as stackql's own output, because the engine does
 // not report an error answered to a DELETE or a plain EXEC. The ids the
 // examples use are the mock's fixture ids, so reads return rows and writes
-// have something to act on.
+// have something to act on. A SELECT that returns no rows fails: a join the
+// engine cannot execute answers with no rows and no error (NOTES.md
+// finding 16).
 //
 // Each document runs against a fresh mock, because the examples end by
 // deleting what they address.
@@ -69,10 +71,11 @@ for (const doc of DOCUMENTS) {
       const meta = /^(show|describe|registry)\b/i.test(sql);
       const wire = mock.log.slice(mark);
       const bad = wire.filter((e) => e.status >= 400 || e.errors);
-      const pass = !r.err && bad.length === 0 && (meta || wire.length > 0);
+      const empty = /^select\b/i.test(sql) && Array.isArray(r.rows) && r.rows.length === 0;
+      const pass = !r.err && bad.length === 0 && (meta || wire.length > 0) && !empty;
       if (!pass) failures++;
       console.log(`  ${pass ? 'PASS' : 'FAIL'}  [${doc.split('/').pop()}:${line}] ${oneLine.slice(0, 110)}${oneLine.length > 110 ? '...' : ''}`);
-      if (!pass) console.log(`        ${r.err ? String(r.err).slice(0, 400) : bad.length ? `wire: ${bad.map((e) => `${e.status} ${(e.errors || []).join('; ')}`).join(', ')}` : 'no request reached the API'}`);
+      if (!pass) console.log(`        ${r.err ? String(r.err).slice(0, 400) : bad.length ? `wire: ${bad.map((e) => `${e.status} ${(e.errors || []).join('; ')}`).join(', ')}` : empty ? 'the statement returned no rows' : 'no request reached the API'}`);
     }
   } finally {
     mock.server.close();

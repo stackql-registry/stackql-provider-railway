@@ -16,6 +16,8 @@
 //   - response transforms: key/value map -> rows, scalar -> result row,
 //     scalar list -> result rows
 //   - SQL LIMIT pushed down to a limit argument
+//   - reading across parents: IN lists, joins with parameters on both
+//     sides; a join supplying a required parameter is pinned as observed
 //   - GraphQL errors (HTTP 200) surfacing as a statement failure
 // INSERT / UPDATE / DELETE / EXEC (REST path, GraphQL variables)
 //   - request body {"query": "mutation...", "variables": {...}} with only
@@ -74,6 +76,26 @@ try {
   check('nested objects projected as JSON columns with snake_case keys', r.rows?.length === 2 && r.rows[0].latest_status === 'SUCCESS' && r.rows[0].repo === 'mock-org/api', r.err || JSON.stringify(r.rows?.[0]));
   r = await sql(`SELECT p.name AS project, w.name AS workspace FROM railway.projects.projects p JOIN railway.workspaces.workspaces w ON w.id = p.workspace_id WHERE p.workspace_id = '${IDS.workspace}'`);
   check('local join of projects to workspaces', r.rows?.length === 3 && r.rows.every((x) => x.workspace === 'Mock Workspace'), r.err || JSON.stringify(r.rows));
+
+  console.log('\nreading across parents (NOTES.md finding 16)');
+  mark = mock.log.length;
+  r = await sql(`SELECT name, project_id FROM railway.environments.environments WHERE project_id IN ('${IDS.project1}', '${IDS.project2}')`);
+  calls = since(mark);
+  check('IN list on a parameter makes one request per value', calls.length === 2 && [IDS.project1, IDS.project2].every((id) => calls.some((c) => c.query.includes(`projectId: "${id}"`))), `got ${calls.length}`);
+  check('IN list returns the rows of every value', r.rows?.length === 2 && [IDS.project1, IDS.project2].every((id) => r.rows.some((x) => x.project_id === id)), r.err || JSON.stringify(r.rows));
+  r = await sql(`SELECT p.name AS project, s.name AS service FROM railway.services.services s JOIN railway.projects.projects p ON p.id = s.project_id WHERE p.workspace_id = '${IDS.workspace}' AND s.project_id IN ('${IDS.project1}', '${IDS.project2}')`);
+  check('join with parameters on both sides returns rows', r.rows?.length === 4 && ['alpha', 'beta'].every((n) => r.rows.filter((x) => x.project === n).length === 2), r.err || JSON.stringify(r.rows));
+  mark = mock.log.length;
+  r = await sql(`SELECT prod.service_name, stg.region AS staging_region FROM railway.services.service_instances prod JOIN railway.services.service_instances stg ON stg.service_id = prod.service_id WHERE prod.environment_id = '${IDS.environment}' AND stg.environment_id = '7d3f0a5c-2e8b-4196-a4d7-5c1e9b3f6a08'`);
+  calls = since(mark);
+  check('self join with different parameter values reads both', calls.length === 2 && r.rows?.length === 2, r.err || `${calls.length} requests, ${r.rows?.length} rows`);
+  // pinned as observed: the GraphQL read path takes no parameters from
+  // another table's rows. When this fails the engine has gained dependent
+  // joins for GraphQL methods and the docs can say so.
+  mark = mock.log.length;
+  r = await sql(`SELECT p.name AS project, e.name AS environment FROM railway.projects.projects p JOIN railway.environments.environments e ON e.project_id = p.id WHERE p.workspace_id = '${IDS.workspace}'`);
+  calls = since(mark);
+  check('pinned: a join cannot supply a required parameter (no rows, no error, no request for the dependent side)', !r.err && (r.rows?.length ?? 0) === 0 && calls.every((c) => !/environments\(/.test(c.query)), r.err || `${r.rows?.length} rows, ${calls.length} requests`);
 
   console.log('\nget by id');
   mark = mock.log.length;

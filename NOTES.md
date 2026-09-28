@@ -142,6 +142,14 @@ The docs generator documents REST providers: WHERE keys are path and query param
 
 `make smoke` creates one project, a second environment, one service without a source, variables, a service domain, a volume and a project token, and deletes the project. Nothing deploys, so nothing is billed for compute. The volume exists empty for about a minute; at $0.15 per GB per month that is a small fraction of a cent. A full run is about 80 statements and about 80 API requests (measured: 79 statements, 78 requests); a read-only run is 18 statements.
 
+## 16. Joins and reading across parents
+
+Observed with stackql v0.12.718 against the mock and the live API.
+
+- **A join does not supply a required parameter.** `FROM projects p JOIN environments e ON e.project_id = p.id WHERE p.workspace_id = '...'` sends the `projects` request, never an `environments` request, and returns no rows and no error. The GraphQL acquire (`primitivebuilder/graphql_single_select_acquire.go`) builds its requests from the statement's own parameters and has no input stream, where the REST acquire reads the rows of the table it depends on. Every SELECT of this provider is a GraphQL method, so the form is unavailable throughout. A three table chain fails at analysis with `data flow violation detected`, because `id` is both a column and the required parameter of the `get` method. `IN (SELECT ...)` and a subquery in `FROM` are rejected.
+- **What works.** An `IN` list on a parameter (`WHERE project_id IN ('a', 'b')`) makes one request per value. A join in which every resource has its own parameters in `WHERE` is executed by the SQL engine on the returned rows, including a self join of one resource under two aliases with different parameter values. The parameters of the right side of a `LEFT JOIN` go in `WHERE`, not `ON` (`no such column` otherwise); unmatched rows are kept. A join to a REST method of another provider works (`github.repos.repos`).
+- **Tests.** The supported forms and the unsupported one are pinned in the integration suite; the pin fails when the engine gains dependent joins for GraphQL methods. `run_docs_examples.mjs` fails a `SELECT` example that returns no rows, because an error check alone passes the unsupported form.
+
 ## Pending
 
 - **Published provider**: `make smoke-live` verifies the provider once it is in the public registry.
