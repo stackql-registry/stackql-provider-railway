@@ -23,6 +23,7 @@ Query, provision and manage Railway resources using SQL: projects, environments,
 
 total services: __15__  
 total resources: __151__  
+source project: __[stackql-provider-railway](https://github.com/stackql-registry/stackql-provider-railway)__  
 
 :::
 
