@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@stackql/pgwire-lite": "^1.0.2",
-    "@stackql/provider-utils": "^0.7.10",
+    "@stackql/provider-utils": "^0.7.12",
     "graphql": "^17.0.2",
     "js-yaml": "^5.2.1",
     "pluralize": "^8.0.0"
